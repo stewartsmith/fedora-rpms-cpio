@@ -4,10 +4,15 @@ Version: 2.13
 Release: 12%{?dist}
 License: GPLv3+
 URL: https://www.gnu.org/software/cpio/
-Source: https://ftp.gnu.org/gnu/cpio/cpio-%{version}.tar.bz2
+Source0: https://ftp.gnu.org/gnu/cpio/cpio-%{version}.tar.bz2
 
 # help2man generated manual page distributed only in RHEL/Fedora
 Source1: cpio.1
+
+Source2: https://ftp.gnu.org/gnu/cpio/cpio-%{version}.tar.bz2.sig
+# https://savannah.gnu.org/projects/cpio/ lists one maintainer, gray
+# and their GPG key is https://savannah.gnu.org/people/viewgpg.php?user_id=311
+Source3: gray-key.gpg
 
 # We use SVR4 portable format as default.
 Patch1: cpio-2.9-rh.patch
@@ -58,6 +63,7 @@ Provides: /bin/cpio
 BuildRequires: gcc
 BuildRequires: texinfo, autoconf, automake, gettext, gettext-devel, rmt
 BuildRequires: make
+BuildRequires: gnupg2
 
 %description
 GNU cpio copies files into or out of a cpio or tar archive.  Archives
@@ -75,6 +81,7 @@ Install cpio if you need a program to manage file archives.
 
 
 %prep
+%{gpgverify} --keyring='%{SOURCE3}' --signature='%{SOURCE2}' --data='%{SOURCE0}'
 %autosetup -p1
 
 
